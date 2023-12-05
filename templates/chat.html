@@ -1,0 +1,148 @@
+{% extends 'layout.html' %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            width: 85%;
+            margin: auto;
+            margin-top: 20px;
+            border: 2px solid black;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            width: 70vw;
+            height: 50vh;
+            margin: auto;
+            overflow-y: auto;
+        }
+
+        .messages {
+            width: 40%;
+            overflow-y: auto;
+            margin: 10px;
+            padding: 5px;
+            border-radius: 10px;
+            border: 2px solid black;
+            background-color: white;
+            font-size: large;
+        }
+
+        .left {
+            float: left;
+            clear: both;
+        }
+
+        .right {
+            float: right;
+            clear: both;
+        }
+
+        .center {
+            margin-top: 10px;
+            clear: both;
+            margin: auto;
+            background-color: rgb(187 187 87);
+            width: 20%;
+            font-size: medium;
+            font-family: cursive;
+            border: none;
+        }
+
+        body {
+            background: linear-gradient(white, rgb(229, 232, 229));
+            height: 100vh;
+        }
+
+        #form {
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        #input {
+            width: 67%;
+            height: 5vh;
+            font-size: large;
+            border-radius: 10px;
+        }
+
+        #btn {
+            height: 5vh;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+    </div>
+    <form action="#" id="form">
+        <input id="input" type="text" placeholder="Type messages">
+        <button id="btn" type="submit">Send</button>
+    </form>
+
+    <!-- Include the Socket.io library -->
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+    <script>
+
+        var socket = io.connect(); // Update with your Flask app's URL
+
+        const name = prompt("Enter name to join the chat");
+        const isAdmin = confirm("Are you an admin?");
+
+        socket.emit('new-user-joined', { name, isAdmin });
+
+        const append = (message, location) => {
+            const div = document.createElement('div');
+            div.classList.add('messages');
+            div.classList.add(location);
+            div.innerText = message;
+            const container = document.querySelector('.container');
+            container.append(div);
+        }
+
+        socket.on('user-joined', name => {
+            append(`${name} joined the chat`, 'center');
+        });
+
+        const form = document.getElementById('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('input')
+            const msg = input.value;
+            append(`You : ${msg}`, 'right');
+
+            if (isAdmin) {
+                const targetUser = prompt("Enter username to send the message");
+                socket.emit('admin-send', { adminName: name, message: msg, targetUser });
+            } else {
+                socket.emit('user-send', { userName: name, message: msg });
+            }
+            input.value = '';
+        });
+
+
+        socket.on('admin-message', data => {
+            append(`${data.admin}: ${data.message}`, 'left');
+        });
+
+        socket.on('receive', obj => {
+            append(`${obj.user} : ${obj.message}`, 'left');
+        });
+        socket.on('left', obj => {
+            append(`${obj.user_name} left the chat`, 'center');
+        })
+    </script>
+</body>
+
+</html>
+{% endblock %}

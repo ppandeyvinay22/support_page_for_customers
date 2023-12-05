@@ -1,0 +1,83 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Add your common head content here -->
+    <title>{% block title %}My App{% endblock %}</title>
+    <style>
+        .main-container {
+            margin: auto;
+            width: 100%;
+        }
+
+        /* Header section */
+        .header {
+            display: flex;
+            gap: 2em;
+        }
+
+        .navbar {
+            margin: 2em 0;
+        }
+
+        .ul {
+            list-style-type: none;
+            display: flex;
+            gap: 4.1em;
+            margin: 0;
+        }
+
+        .anchor {
+            text-decoration: none;
+            color: rgba(76, 78, 100, 0.87);
+            font-size: 20px;
+            position: relative;
+        }
+
+        .anchor.active {
+            color: #2e2828;
+            font-weight: 600;
+        }
+
+        .anchor:hover {
+            text-decoration: none;
+            color: #2e2828;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <header class="header">
+            <nav class="navbar">
+                <ul class="ul">
+                    <li class="li"><a href="/" class="anchor" id="chatLink">Chat</a></li>
+                    <li class="li"><a href="/ticket" class="anchor" id="ticketLink">Tickets</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        // JavaScript code for handling navbar item clicks
+        document.addEventListener('DOMContentLoaded', function () {
+            var chatLink = document.getElementById('chatLink');
+            var ticketLink = document.getElementById('ticketLink');
+
+            // Check if the current path matches the link and set it as active
+            if (window.location.pathname === '/support') {
+                chatLink.classList.add('active');
+            } else if (window.location.pathname === '/support/ticket') {
+                ticketLink.classList.add('active');
+            }
+
+            // Add click event listeners to the links
+
+        });
+    </script>
+</body>
+
+</html>

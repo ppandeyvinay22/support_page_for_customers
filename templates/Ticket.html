@@ -1,0 +1,902 @@
+{% extends 'layout.html' %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+{% block content %}
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <title>Support Page</title>
+  <style>
+    .container {
+      margin-top: 0px;
+    }
+
+    .top-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .options button {
+      padding: 5px 15px;
+      color: #fff;
+      border: none;
+      /* border-radius: 5px; */
+      cursor: pointer;
+      font-size: 16px;
+      color: rgba(76, 78, 100, 0.87);
+      margin: 0px 5px;
+      background-color: rgba(0, 0, 0, 0);
+      /* border-bottom: 2px solid rgba(76,78,100,0.1); */
+    }
+
+    .options button.selected {
+      color: #666bfd;
+      border-bottom: 2px solid #666bfd;
+    }
+
+    .options button:last-child {
+      margin-right: 0;
+    }
+
+    .raise-ticket-btn {
+      padding: 12px 24px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .raise-ticket-btn:hover {
+      background-color: #218838;
+    }
+
+
+    .bottom-container {
+      margin-top: 20px;
+      /* padding: 20px; */
+      display: flex;
+      /* justify-content: space-between; */
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .support-card {
+      width: 30%;
+      max-width: 400px;
+      min-height: 225px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .innerDiv-supportcard {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 10px;
+      width: 100%;
+    }
+
+    .status-div {
+      padding: 6px 16px;
+      background-color: gray;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 40px;
+      font-size: 14px;
+    }
+
+    .pending-color {
+      background-color: #f7cb73;
+    }
+
+    .resolved-color {
+      background-color: #35da5b;
+    }
+
+    .heading-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .tags-color {
+      background-color: rgba(76, 78, 100, 0.2);
+      color: rgba(76, 78, 100, 1);
+      font-size: 14px;
+    }
+
+    .bottom-card {
+      border-top: 1px solid rgba(76, 78, 100, 0.2);
+      display: flex;
+      flex-direction: row;
+      height: 40px;
+      justify-content: flex-start;
+      padding-left: 10px;
+      color: rgba(76, 78, 100, 0.87);
+      font-size: 14px;
+      align-items: center;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .bottom-card:hover {
+      color: #666bfd;
+    }
+
+
+    #selectedoptionsContainer {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #selectedScansContainer {
+      display: flex;
+      flex-direction: column;
+    }
+
+
+    .selected-options {
+      background-color: rgba(76, 78, 100, 0.2);
+      color: rgba(76, 78, 100, 1);
+      font-size: 14px;
+      max-width: 40%;
+      margin: 2px 10px;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+    .selected-options-scan {
+      background-color: rgba(76, 78, 100, 0.2);
+      color: rgba(76, 78, 100, 1);
+      font-size: 14px;
+      max-width: 70%;
+      margin: 2px;
+      padding: 4px;
+      border-radius: 4px;
+    }
+
+
+
+
+    /*modal styling*/
+    .modal-header {
+      padding: 0px 15px;
+      margin-top: 5px;
+      height: 50px;
+    }
+
+    .modal-header2 {
+      display: flex;
+      justify-content: space-between;
+      padding: 0px 15px;
+      margin-top: 5px;
+      height: 20px;
+      margin-bottom: 10px;
+    }
+
+    .modal-title2 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .modal-footer2 {
+      padding: 5px 20px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .searchbar {
+      margin: 5px;
+      padding: 2px 10px;
+      height: 30px;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-box {
+      margin-top: 2px;
+      border: none;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .search-icon {
+      font-size: 1.2rem;
+      opacity: 0.7;
+      width: 20px;
+      height: 20px;
+    }
+
+    .table-btn {
+      display: inline-block;
+      padding: 3px 10px;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+    }
+
+
+    /*Table Styling*/
+    .table-container {
+      border-collapse: collapse;
+      width: 96%;
+    }
+
+    .table-container th,
+    .table-container td {
+      border: 1px solid #dddddd;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .table-container th {
+      background-color: #f2f2f2;
+    }
+
+    .table-container tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .table-container tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .form-check {
+      display: flex;
+      align-items: center;
+    }
+
+    .form-check-input {
+      height: 15px;
+      width: 15px;
+    }
+
+    .ScanId,
+    .date,
+    .crop {
+      margin: auto;
+    }
+
+
+
+    textarea {
+      resize: vertical;
+    }
+
+    .dropdown {
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+    }
+
+    .dropdown-text {
+      padding-top: 5px !important;
+      font-size: 14px;
+      margin: 0px 10px;
+    }
+
+
+
+    #dropdownMenuButton {
+      width: 25%;
+    }
+
+
+    .closebtn {
+      background-color: rgb(215, 215, 215);
+      font-size: 20px;
+    }
+
+    .savebtn {
+      font-size: 20px;
+    }
+
+    .closebtn:hover {
+      background-color: #9ea8a0;
+    }
+
+    /*Media query at width 630px*/
+    @media only screen and (max-width: 630px) {
+      .bottom-container {
+        gap: 10px;
+      }
+
+      .support-card {
+        width: 48%;
+      }
+    }
+
+    /*Hamburger after 430px*/
+    @media only screen and (max-width: 430px) {
+
+      .top-container {
+        align-items: flex-start;
+      }
+
+      .options {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .options button {
+        width: 100%;
+        margin: 0;
+        padding-left: 10px;
+        border: none;
+        text-align: left;
+      }
+
+      .options button.selected {
+        color: #666bfd;
+        border-bottom: none;
+      }
+    }
+
+    /*Animation*/
+    /*.overlay {
+      position: absolute;
+      z-index: 999;
+      background-color: white;
+      width: 100%;
+      height: 100%;
+      animation: reveal 1s ease-in forwards;
+      transform-origin: bottom;
+    }
+
+    @keyframes reveal {
+      from {
+        transform: scaleY(1);
+      }
+
+      to {
+        transform: scaleY(0);
+      }
+    }
+
+    .bottom-container {
+      animation: growIn 2s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
+      transform: scale(0.4);
+    }
+
+    @keyframes growIn {
+      to {
+        transform: scale(1);
+      }
+    }*/
+  </style>
+</head>
+<!-- <div class="overlay"></div> -->
+<div class="container ">
+  <!-- <h3 style="text-align: center; color:#161813">Support Page</h3> -->
+  <!-- Bootstrap Alert -->
+  <div id="saveAlert" class="alert alert-dismissible" role="alert" style="display: none;">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong></strong>
+  </div>
+
+  <div class="top-container">
+    <div class="options">
+      <button id="allBtn" class="selected">All</button>
+      <button id="pendingBtn">Pending</button>
+      <button id="resolvedBtn">Resolved</button>
+    </div>
+    <button class="raise-ticket-btn" type="button" id="ticket-btn" data-target="#ticketModal">Raise
+      Ticket</button>
+  </div>
+  <div class="bottom-container" id="cardsDiv"></div>
+  <!-- <div class="form-container"> -->
+  <!-- Bootstrap Modal -->
+  <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="ticketModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="ticketModalLabel">Raise a Ticket</h2>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="title">Title </label>
+              <input type="text" class="form-control" id="title" placeholder="Enter the title">
+            </div>
+            <div class="form-group">
+              <label for="description">Description </label>
+              <textarea id="description" class="form-control" name="message" maxlength="250"
+                placeholder="Please, Enter your query in not more than 250 words."></textarea>
+            </div>
+
+
+            <div class=" form-group">
+              <label for="issue-type">Issue Type</label>
+              <select class="form-control" id="operationSelect">
+                <option value="Operation" selected>Choose your Issue Type</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Software">Software</option>
+                <option value="result-variation">Result Variation</option>
+              </select>
+              <div class="dropdown" id="issue-dropdown">
+                <label for=" issue-label" id="issueTypeLabel">Choose specific Issue type</label>
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  Choose Options
+                </button>
+                <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton">
+                  <!-- our dropdown content will appear here dyanamically -->
+                </ul>
+              </div>
+              <!-- Container to display selected Issues -->
+              <div id="selectedoptionsContainer"></div>
+            </div>
+
+            <div>
+              <label for="Scans">Add Scans</label>
+            </div>
+            <div class="form-group">
+              <div style="display: inline-block;">
+                <button class="btn btn-secondary" type="button" data-toggle="modal" id="ScanOptionsButton"
+                  data-target="#scanOptionsModal">
+                  Scan Options
+                </button>
+              </div>
+            </div>
+
+            <!-- Modal for Scan Options -->
+            <div class="modal fade" id="scanOptionsModal" tabindex="-1" role="dialog"
+              aria-labelledby="scanOptionsModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header2">
+                    <h5 class="modal-title2" id="scanOptionsModalLabel">Select from Table</h5>
+                    <div class="searchbar">
+                      <input type="text" class="search-box" placeholder="Search Scan ID..."> <span
+                        class="search-icon glyphicon glyphicon-search"></span>
+                    </div>
+                    <div class="modal-footer2">
+                      <button type="button" class="table-btn btn-secondary" id="closeScanOptionsModal">Close</button>
+                      <button type="button" class="table-btn btn-primary" id="addScanOptionsButton">Add</button>
+                    </div>
+                  </div>
+                  <div class="modal-body">
+                    <!-- Options will be dynamically added here -->
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </form>
+          <!-- Container to display selected scans -->
+          <div id="selectedScansContainer"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary closebtn" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary savebtn" id="saveButton">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- </div> -->
+</div>
+<div id="loadingSpinner" class="spinner-overlay">
+  <div class="spinner"></div>
+</div>
+
+
+<script>
+
+  document.getElementById('closeScanOptionsModal').addEventListener('click', function () {
+    // Use Bootstrap modal method to hide the inner modal
+    $('#scanOptionsModal').modal('hide');
+
+    // Enable scrolling in the parent modal after the inner modal is closed, just to make the scrolling behaviour work properly, which was intially lagging
+    $('#ticketModal').css('overflow', 'auto');
+  });
+
+
+  document.getElementById('addScanOptionsButton').addEventListener('click', function () {
+    // Perform actions when the "Add" button is clicked
+    console.log('Scans are added.');
+
+    // Fetch the checked options from the table
+    var selectedOptions = [];
+    $(".table-container input[type='checkbox']:checked").each(function () {
+      var optionId = $(this).val();
+      var optionCrop = $(this).closest('tr').find('.crop').text();
+      var optionScanId = $(this).closest('tr').find('.ScanId').text();
+      var optionDate = $(this).closest('tr').find('.date').text();
+
+      selectedOptions.push({
+        id: optionId,
+        crop: optionCrop,
+        ScanId: optionScanId,
+        date: optionDate
+      });
+    });
+
+    // Use Bootstrap modal method to hide the inner modal
+    $('#scanOptionsModal').modal('hide');
+
+    // Enable scrolling in the parent modal after the inner modal is closed, just to make the scrolling behaviour work properly, which was intially lagging
+    $('#ticketModal').css('overflow', 'auto');
+
+    // Change the 'Scan options' to now 'Selected scans'
+    $('#ScanOptionsButton').text('Selected Scans:');
+
+    // Display selected options horizontally on the UI
+    var optionsContainer = $('#selectedScansContainer');
+    optionsContainer.empty(); // Clear previous content
+
+    selectedOptions.forEach(function (option) {
+      var selectedOptionDiv = $('<div class="selected-options-scan">');
+      selectedOptionDiv.html(`<strong>Crop:</strong> ${option.crop} | <strong>Scan ID:</strong> ${option.ScanId} | <strong>Date:</strong> ${option.date}`);
+      optionsContainer.append(selectedOptionDiv);
+    });
+  });
+
+
+
+
+  // Fetch scan options from the backend
+  $.get("/get_scan_options", function (data) {
+    // Populate the modal with a table structure based on the scan options
+    var modalBody = $("#scanOptionsModal .modal-body");
+    modalBody.empty();
+
+    // Create the table structure
+    var table = $('<table class="table-container">');
+    var tableHeader = $('<tr><th>Choose</th><th>Crop</th><th>Scan ID</th><th>Date</th></tr>');
+    table.append(tableHeader);
+
+    data.forEach(function (option) {
+      var tableRow = $('<tr>' +
+        '<td><input class="form-check-input" type="checkbox" value="' + option.id + '" id="' + option.id + '"></td>' +
+        '<td class="crop">' + option.crop + '</td>' +
+        '<td class="ScanId">' + option.ScanId + '</td>' +
+        '<td class="date">' + option.date + '</td>' +
+        '</tr>');
+
+      // Add a click event listener to the table row
+      tableRow.click(function () {
+        // Find the checkbox within the clicked row and toggle its checked state
+        $(this).find('input[type="checkbox"]').prop('checked', function (i, value) {
+          return !value; // Toggle the checkbox state
+        });
+      });
+
+      table.append(tableRow);
+    });
+
+    modalBody.append(table);
+
+    // Add search functionality
+    $(".search-box").on("keyup", function () {
+      var value = $(this).val().toLowerCase();
+      $("#scanOptionsModal .modal-body tr").filter(function () {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+      });
+    });
+  });
+
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+
+    // Prevent the dropdown from closing on checkbox click
+    $('.dropdown-menu').on('click', function (e) {
+      e.stopPropagation();
+    });
+
+
+
+    $("#issue-dropdown").hide()
+
+    // Wrap the function inside the change event
+    $("#operationSelect").change(function () {
+      loadOptions();
+    });
+    function loadOptions() {
+      var selectedOperation = $("#operationSelect").val();
+      var options = [];
+
+      // Update label based on the selected operation
+      $("#issueTypeLabel").text("Choose specific " + selectedOperation + " issue");
+
+      // Clear existing options in the dropdown
+      $("#issue-dropdown ul").empty();
+
+      // Populate options based on the selected operation
+      switch (selectedOperation) {
+        case "Hardware":
+          options = [
+            "Facing issue in Lower Scanner",
+            "Facing issue in Upper Scanner",
+            "Weighing machine issue",
+            "Aurdino Problem"
+          ];
+          break;
+
+        case "Software":
+          options = [
+            "Software Bug",
+            "Installation Issue",
+            "Compatibility Problem",
+            "Performance Problem"
+          ];
+          break;
+
+        case "result-variation":
+          options = [
+            "variation in rice results",
+            "variation in ricepb results",
+            "variation in paddy results",
+            "variation in Wheat results",
+          ];
+          break;
+
+        // Add more cases for other operations
+
+        default:
+          break;
+      }
+
+      // Add options to the dropdown
+      options.forEach(function (option) {
+        var $checkbox = $('<input class="dropdown-box" type="checkbox" value="' + option + '">');
+        var $label = $('<label class="checkbox-inline dropdown-text"></label>').append($checkbox).append(option);
+        var $listItem = $('<li></li>').append($label);
+
+        $("#issue-dropdown ul").append($listItem);
+      });
+
+      // Show the issue dropdown based on the selected value
+      if (selectedOperation === "Operation") {
+        $("#issue-dropdown").hide();
+      } else {
+        $("#issue-dropdown").show();
+      }
+
+      // Add change event binding outside the loop
+      $('.dropdown-menu input[type="checkbox"]').change(function () {
+        var selectedOptions = $('.dropdown-menu input[type="checkbox"]:checked')
+          .map(function () {
+            return $(this).val();
+          })
+          .get();
+
+        var optionsContainer = $('#selectedoptionsContainer');
+
+        // Change the 'choose options' option to now 'Selected options'
+        $('#dropdownMenuButton').text('Selected Options:');
+
+        // Display selected options vertically 
+        optionsContainer.html(selectedOptions.map(option => `<div class="selected-options">${option}</div>`).join(''));
+      });
+    }
+
+
+
+
+
+    // Function to filter cards based on status
+    function filterCards(status) {
+      $('.support-card').hide(); // Hide all cards initially
+
+      if (status === 'All') {
+        $('.support-card').show(); // Show all cards if "All" is selected
+      } else {
+        $('.support-card[data-status="' + status + '"]').show(); // Show cards with the selected status
+      }
+    }
+
+    // Event listener for button clicks
+    $('.options button').on('click', function () {
+      var status = $(this).text(); // Get the text content of the clicked button
+      $('.options button').removeClass('selected');
+      $(this).addClass('selected');
+      filterCards(status);
+    });
+
+
+
+    function addSupportCards(data) {
+      // Create a div element with class "support-card"
+      var supportCardDiv = document.createElement("div");
+      supportCardDiv.className = "support-card";
+      // Add data attribute
+      supportCardDiv.setAttribute('data-status', data['status']);
+
+      // Create the first inner div with styles
+      var innerDiv1 = document.createElement("div");
+      innerDiv1.className = "innerDiv-supportcard"
+
+      var tags = data["tags"];
+      var tagsHtml = tags
+        .map((tag) => `<div class="status-div tags-color">${tag}</div>`)
+        .join("");
+
+      // Create and set content for the first inner div
+      var innerDiv1Content = `
+    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+        <h4 style="color: rgba(76, 78, 100, 0.6)">${data["id"]}</h4>
+        <div class="status-div ${data["status"] == "Pending" ? "pending-color" : "resolved-color"
+        }">${data["status"]}</div>
+    </div>
+    <div class="heading-text" style="color: rgba(76, 78, 100, 0.87); margin-top: 5px; font-size: 18px; font-weight: 600;">
+      ${data["title"]}
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 25px">
+      ${tagsHtml}
+    </div>
+    <h4 style="font-size: 14px; color: rgba(76, 78, 100, 0.6); margin-bottom: 0px; font-weight: 500; margin-top: 25px;">
+      ${data["creation_time"]}
+    </h4>`;
+
+      innerDiv1.innerHTML = innerDiv1Content;
+
+      // Create the second inner div with class "bottom-card"
+      var innerDiv2 = document.createElement("div");
+      innerDiv2.className = "bottom-card";
+      innerDiv2.onclick = () => {
+        alert(data["id"]);
+      };
+      innerDiv2.ticket_id = data["id"];
+      // Set content for the second inner div
+      innerDiv2.textContent = "More Details";
+
+      // Create a span element with class "glyphicon glyphicon-menu-right"
+      var spanElement = document.createElement("span");
+      spanElement.className = "glyphicon glyphicon-menu-right";
+      spanElement.style.marginBottom = "3px";
+      spanElement.style.marginLeft = "5px";
+
+      // Append spanElement to innerDiv2
+      innerDiv2.appendChild(spanElement);
+
+      // Append innerDiv1 and innerDiv2 to supportCardDiv
+      supportCardDiv.appendChild(innerDiv1);
+      supportCardDiv.appendChild(innerDiv2);
+
+      // Append supportCardDiv to the parent element in your HTML document
+      var parentElement = document.getElementById("cardsDiv");
+      parentElement.appendChild(supportCardDiv);
+    }
+    function fetchData() {
+      temp_data = [
+        {
+          id: "1234",
+          title: "title",
+          creation_time: "creation_time",
+          tags: ["fdf", "erwr"],
+          status: "Pending",
+        },
+        {
+          id: "1456",
+          title: "title",
+          creation_time: "creation_time",
+          tags: ["fdf", "erwr"],
+          status: "Resolved",
+        },
+        {
+          id: "2456",
+          title: "title",
+          creation_time: "creation_time",
+          tags: ["fdf", "erwr"],
+          status: "Resolved",
+        },
+      ];
+      temp_data.forEach(function (item) {
+        console.log(item);
+        addSupportCards(item);
+      });
+    }
+
+    $('#ticketModal').modal({
+      backdrop: 'static', // Prevents closing when clicking outside the modal
+      //keyboard: false,     // Prevents closing with the keyboard (optional)
+      show: false           // Do not show the modal immediately by default
+    });
+
+    // This function will be called when Raise Ticket button got clicked
+    function openModal() {
+      //console.log('Button Clicked');
+      $('#ticketModal').modal('show');
+    }
+
+    // Show the ticket form modal when the "Raise Ticket" button is clicked
+    document.getElementById("ticket-btn").addEventListener("click", openModal);
+
+
+
+
+    $('#saveButton').on('click', function () {
+      // Create a FormData object to handle file uploads
+      var formData = new FormData();
+
+      // Append other form data to the FormData object
+      formData.append('title', $('#title').val());
+      formData.append('description', $('#description').val());
+      formData.append('issue-type', $('#operationSelect').val());
+
+      // Append scans as a JSON string
+      formData.append('scans', JSON.stringify($('.dropdown-box:checked').map(function () {
+        return this.value;
+      }).get()));
+
+
+
+      // Send data to the server
+      $.ajax({
+        type: 'POST',
+        url: '/save_ticket',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (response) {
+          console.log(response.message);
+          // Show the success alert
+          $('#saveAlert').addClass('alert-success').find('strong').text('Ticket saved successfully.').end().show();
+          // Close the modal when the data is saved
+          $('#ticketModal').modal('hide');
+          // Hide the alert after 3 seconds
+          setTimeout(function () {
+            $('#saveAlert').hide();
+          }, 2000);
+        },
+        error: function (error) {
+          // Handle errors
+          console.error('Error:', error);
+          // Show the error alert
+          $('#saveAlert').addClass('alert-danger').find('strong').text('Please fill the complete form.').end().show();
+          // Hide the alert after 2 seconds
+          setTimeout(function () {
+            $('#saveAlert').hide();
+          }, 3000);
+        }
+      });
+    });
+
+
+    setTimeout(() => {
+      fetchData();
+      $("#loadingSpinner").hide();
+    }, 1000);
+  });
+</script>
+
+</html>
+{% endblock %}
